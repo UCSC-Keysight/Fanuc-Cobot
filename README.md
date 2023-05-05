@@ -6,6 +6,10 @@
 - This plugin was developed using Fanuc's ROBOGUIDE simulator as a proof of concept. While the design should be applicable to a physical robot, additional field testing will likely be necessary.
 
 ### Demo
+Moving the CRX-20iA/L programatically with OpenTAP.
+  
+<kbd>![fanuc_demo](https://user-images.githubusercontent.com/80125540/236528409-76ede598-7aa5-49da-bbbd-69bfc735f284.gif)</kbd>
+
 
 ## Setup
 
