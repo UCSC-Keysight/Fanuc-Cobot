@@ -8,7 +8,7 @@
 ### Demo
 Moving the CRX-20iA/L programatically with OpenTAP.
   
-<kbd>![fanuc_demo](https://user-images.githubusercontent.com/80125540/236528409-76ede598-7aa5-49da-bbbd-69bfc735f284.gif)</kbd>
+<kbd>![fanuc_demo](https://user-images.githubusercontent.com/80125540/236565884-c15f7dab-2ed4-4590-be3e-899b3a7b7999.gif)</kbd>
 
 
 ## Setup
