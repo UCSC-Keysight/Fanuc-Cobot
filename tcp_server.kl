@@ -1,0 +1,126 @@
+-- tcp_server.kl
+--
+-- SUMMARY:
+--      Program implements a server abstraction running on the robot's controller.
+--      Server receives a message from an external client, parses the payload then
+--      moves the robot based on the payload. The server anticipates the following
+--      message format of data type string which is internally handled by OpenTAP:
+--
+--      '<joint1>,<joint2>,<joint3>,<joint4>,<joint5>,<joint6>,'
+-- 
+-- REQUIREMENTS:
+--      Program requires that the robot's S3 server tag to be setup prior to running.
+--      See README.md for setup instructions.
+
+PROGRAM tcp_server
+%STACKSIZE = 4000
+%NOLOCKGROUP
+%NOPAUSE=ERROR+COMMAND+TPENABLE
+%ENVIRONMENT uif
+%ENVIRONMENT sysdef
+%ENVIRONMENT memo
+%ENVIRONMENT kclop
+%ENVIRONMENT bynam
+%ENVIRONMENT fdev
+%ENVIRONMENT flbt
+%INCLUDE klevccdf
+%INCLUDE klevkeys
+%INCLUDE klevkmsk
+
+VAR
+    file_var  : FILE
+    temp_str1  : STRING[128]
+    number_str : STRING[128]
+    status    : INTEGER
+    entry     : INTEGER
+    value_start : INTEGER
+    max_digits : INTEGER
+    current_char : STRING[1]
+    char_index : INTEGER
+    j_array: ARRAY[9] OF REAL
+    cur_joint: INTEGER
+    j_pos     : JOINTPOS
+    port : INTEGER
+    temp_int : INTEGER
+    received : INTEGER
+
+ROUTINE clear_display
+    BEGIN
+        WRITE(CHR(128))
+    END clear_display
+
+  ROUTINE get_port : INTEGER
+    BEGIN
+        GET_VAR(entry,'*SYSTEM*','$HOSTS_CFG[3].$SERVER_PORT', temp_int, status)
+        RETURN (temp_int) 
+    END get_port
+ 
+
+BEGIN
+    received = 0
+    WHILE TRUE DO
+        
+        WRITE('Number of messages received: ', received, CR)
+        WRITE('Server listening on port ', get_port, CR)
+        SET_FILE_ATR(file_var, ATR_IA)
+        MSG_CONNECT('S3:', status)
+        clear_display
+
+        IF status = 0 THEN
+            WRITE('Server connected with client', CR)
+            OPEN FILE file_var ('rw', 'S3:')
+        ELSE
+        	status = -1
+        	-- terminate some how?
+        	-- This case hasn't been observed yet.
+        ENDIF
+
+        BYTES_AHEAD(file_var, entry, status)
+
+        IF entry > 0 THEN
+
+            WRITE('Receiving message from client.', CR)
+            READ file_var(temp_str1::entry)
+            status = IO_STATUS(file_var)
+            
+            -- Parse command for joint values.
+            IF status = 0 THEN
+                value_start = 1
+                max_digits = 1
+                cur_joint = 1
+                FOR char_index = 1 TO STR_LEN(temp_str1) DO
+                    
+                    current_char = SUB_STR(temp_str1, char_index, 1)
+                    
+                    IF current_char = ',' THEN
+                        number_str = SUB_STR(temp_str1, value_start, max_digits-1)
+                        CNV_STR_REAL(number_str, j_array[cur_joint])
+                        value_start = char_index + 1
+                        max_digits = 0
+                        cur_joint = cur_joint + 1
+                    ENDIF
+                
+                    max_digits = max_digits+1
+                ENDFOR
+                
+                -- Unused joints, required by KAREL.
+                FOR cur_joint = 7 TO 9 DO
+                    j_array[cur_joint] = 0.0
+                ENDFOR
+                
+                -- Converts joints into proper data type then sends to controller.
+                CNV_REL_JPOS(j_array, j_pos, status)
+                MOVE TO j_pos
+                
+                -- Server sends ACK to client.
+                WRITE file_var('ACK')
+            ENDIF
+        ENDIF
+        
+        CLOSE FILE file_var
+        WRITE('Disconnecting from client...', CR)
+        MSG_DISCO('S3:', status)
+        received = received + 1
+    ENDWHILE
+END tcp_server
+
