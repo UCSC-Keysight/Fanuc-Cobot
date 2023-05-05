@@ -32,5 +32,6 @@ class MoveCobot (TestStep):
             joint_value = getattr(self, f'joint{i}')
             command += f'{joint_value},'
         
-        self.cobot.send_request_movement(command)
+        # self.cobot.send_request_movement(command)
+        self.cobot.seek_target_position()
    
