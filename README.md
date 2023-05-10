@@ -50,22 +50,42 @@ Moving the CRX-20iA/L programatically with OpenTAP.
 3. Load the KAREL server script with the following actions:
      
    <kbd>![build_karel](https://user-images.githubusercontent.com/80125540/236607697-25302285-1197-4ce2-8223-c69d80e1c813.gif)</kbd>
-   1. x
-   2. y
+   1. In the project navigation pane, right click **Files** then select **New File** and **KAREL source (.kl)**
+   2. Paste [this KAREL script](https://github.com/UCSC-Keysight/Fanuc-Cobot/blob/main/tcp_server.kl) then hit build in the upper right hand corner. 
 
 4. Create the server tag with the following actions:
      
    <kbd>![server_tag](https://user-images.githubusercontent.com/80125540/236607777-cff38654-cf97-42cf-8edf-25226cd5bbbd.gif)</kbd>
-   1. x
-   2. y
-   
+   1. On the Teach Pendant keypad, press <kbd>MENU</kbd> to open the menu drop drown.
+   2. In the drop down, highlight **SETUP** then select** Host Comm**.
+   3. Using your keyboard, press <kbd>F4</kbd> then <kbd>3</kbd>
+   4. Highlight the **S3** option then press <kbd>Enter</kbd>
+   5. Navigate to the **Protocol** option and select **SM**
+   6. Navigate to the Startup State option then press <kdb>F4</kbd> then <kdb>3</kbd>
+   7. Afterwards, press <kdb>F2</kbd> then <kdb>1</kbd>
+   8. Afterwards, press <kdb>F2</kbd> then <kdb>3</kbd>
+   9. On the Teach Pendant keypad, press <kbd>MENU</kbd> to open the menu drop drown and select **NEXT**, **SYSTEM** then **Variables**.
+   10. Scroll until you see **HOSTS_CFG** (not HOSTC_CFG), press enter, select HOST **3** then change the **SEVER_PORT** to **12345**
+
 5. Load and run the KAREL program with the following actions:
      
    <kbd>![start_server](https://user-images.githubusercontent.com/80125540/236607967-ba88f5e6-57b5-491d-ba11-785ded07eb61.gif)</kbd>
-   1. x
-   2. y
 
 ### OpenTAP Setup
+1. Clone this repository in a directory of your choice with the following command:
+   ```Console
+   git clone https://github.com/UCSC-Keysight/Fanuc-Cobot.git
+   ```
+2. Build the plugin and launch the editor with the following commands:
+   ```Console
+   dotnet build
+   bin\tap package install editorx
+   bin\tap editorx
+   ```
+3. Setup the bench setting by creating a CRX-20iA/L instrument
+4. Add the Move Cobot test step and change the joint values as you desire.  
+
+<!-- ### OpenTAP Setup
 1. If you haven't already, install OpenTAP.
 2. Downlaod the CRX-20iA plugin package. Save it in OpenTAP's root directory at the lcoation you installed it. 
 3. Open a console and navigate to OpenTAP's root directory. Run the following commands to ensure you have the required plugins.
@@ -79,7 +99,7 @@ Moving the CRX-20iA/L programatically with OpenTAP.
      
    ```Console
    tap editorx
-   ```
+   ``` -->
 
 ## Usage
 
