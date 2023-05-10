@@ -1,7 +1,7 @@
+from OpenTap import Display
 from opentap import *
 from .CRX_20iA import CRX_20iA
-import OpenTap
-from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute, AvailableValues, EnabledIfAttribute
+from System import String
 
 @attribute(OpenTap.Display("Move Cobot", "Moves collaborative robot to specified location.", "Fanuc"))
 class MoveCobot (TestStep):
