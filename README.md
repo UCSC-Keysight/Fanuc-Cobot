@@ -101,10 +101,10 @@ Moving the CRX-20iA/L programatically with OpenTAP.
    tap editorx
    ``` -->
 
-## Usage
+<!-- ## Usage
 
 ### Create a test plan
-details go here
+details go here -->
 
 
 ## Technical Details
