@@ -1,5 +1,5 @@
-from OpenTap import Display
 from opentap import *
+from OpenTap import Display
 from .CRX_20iA import CRX_20iA
 from System import String
 

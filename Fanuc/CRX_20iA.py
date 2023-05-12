@@ -1,5 +1,5 @@
-from OpenTap import *
 from opentap import *
+from OpenTap import *
 from System import String, Int32
 import socket
 import clr
