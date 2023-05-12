@@ -20,18 +20,34 @@ class MoveCobot (TestStep):
         .add_attribute(Display("joint5", "Position of joint5", "Joints", -1, True))
     joint6 = property(String, "38.22")\
         .add_attribute(Display("joint6", "Position of joint6", "Joints", -1, True))
+    Mode = property(String, "Seek Mode")\
+        .add_attribute(OpenTap.AvailableValues("Available"))\
+        .add_attribute(OpenTap.Display("Mode", "Values from Available Values can be selected here.", "Mode"))
+    Available = property(List[String], None)\
+        .add_attribute(OpenTap.Display("Available Values", "Select which values are available for 'Mode'.", "Mode"))
 
 
     def __init__(self):
         super(MoveCobot, self).__init__()
+        self.Available = List[String]()
+        self.Available.Add("Seek Mode")
+        self.Available.Add("Manual Mode")
     
     def Run(self):
 
         command = ''
-        for i in range(1, 7):
-            joint_value = getattr(self, f'joint{i}')
-            command += f'{joint_value},'
+        if self.Mode == "Seek Mode":
+            self.cobot.seek_target_position()
+        elif self.Mode == "Manual Mode":
+            
+            # Prepare move message with user inputs.
+            for i in range(1, 7):
+                joint_value = getattr(self, f'joint{i}')
+                command += f'{joint_value},'
+            
+            print(command)
+            self.cobot.seek_target_position()
         
-        # self.cobot.send_request_movement(command)
-        self.cobot.seek_target_position()
+
+        
    
